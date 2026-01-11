@@ -256,8 +256,8 @@
                 <div className="min-h-screen bg-slate-50 p-2 md:p-8 font-sans text-slate-800" onClick={() => setActiveCell(null)}>
                     <div className="max-w-7xl mx-auto space-y-4">
                         
-                        {/* 顶部控制面板 */}
-                        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6" onClick={(e) => e.stopPropagation()}>
+                        {/* 顶部控制面板 - 移除了 stopPropagation */}
+                        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6">
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
                                 <div>
                                     <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
@@ -269,10 +269,10 @@
                                     </p>
                                 </div>
                                 <div className="flex gap-2">
-                                    <button onClick={() => { setCheckMode(!checkMode); setActiveCell(null); }} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium border ${checkMode ? 'bg-orange-50 text-orange-600 border-orange-200' : 'bg-white text-slate-600 border-slate-200'}`}>
+                                    <button onClick={(e) => { e.stopPropagation(); setCheckMode(!checkMode); setActiveCell(null); }} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium border ${checkMode ? 'bg-orange-50 text-orange-600 border-orange-200' : 'bg-white text-slate-600 border-slate-200'}`}>
                                         {checkMode ? <RotateCcw className="w-4 h-4"/> : <CheckCircle className="w-4 h-4" />} {checkMode ? '退出改错' : '检查对错'}
                                     </button>
-                                    <button onClick={() => { setGridData({}); setCheckMode(false); setActiveCell(null); }} className="flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-100 text-sm font-medium">
+                                    <button onClick={(e) => { e.stopPropagation(); setGridData({}); setCheckMode(false); setActiveCell(null); }} className="flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-100 text-sm font-medium">
                                         <Trash2 className="w-4 h-4" /> 清空
                                     </button>
                                 </div>
@@ -285,8 +285,8 @@
                                     <div className="space-y-1">
                                         <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">显示模式</label>
                                         <div className="flex bg-slate-100 rounded-lg p-1">
-                                            <button onClick={() => setDisplayMode('note')} className={`flex-1 py-1 text-sm font-bold rounded ${displayMode === 'note' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>音名 (C)</button>
-                                            <button onClick={() => setDisplayMode('interval')} className={`flex-1 py-1 text-sm font-bold rounded ${displayMode === 'interval' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>简谱 (1)</button>
+                                            <button onClick={(e) => { e.stopPropagation(); setDisplayMode('note'); }} className={`flex-1 py-1 text-sm font-bold rounded ${displayMode === 'note' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>音名 (C)</button>
+                                            <button onClick={(e) => { e.stopPropagation(); setDisplayMode('interval'); }} className={`flex-1 py-1 text-sm font-bold rounded ${displayMode === 'interval' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>简谱 (1)</button>
                                         </div>
                                     </div>
                                     
@@ -299,11 +299,12 @@
                                             type="range" min="3" max="24" step="1" 
                                             value={visibleFrets} 
                                             onChange={(e) => setVisibleFrets(parseInt(e.target.value))}
+                                            onClick={(e) => e.stopPropagation()} // 滑块需要阻止冒泡，否则拖动可能触发背景点击
                                             className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
                                         />
                                     </div>
 
-                                    <div className="flex items-center gap-2 pt-2">
+                                    <div className="flex items-center gap-2 pt-2" onClick={(e) => e.stopPropagation()}>
                                         <input 
                                             type="checkbox" id="autoClear" checked={autoClear} onChange={(e) => setAutoClear(e.target.checked)}
                                             className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
@@ -311,7 +312,7 @@
                                         <label htmlFor="autoClear" className="text-xs text-slate-600 select-none cursor-pointer">切换和弦时自动清空</label>
                                     </div>
 
-                                    <button onClick={generateAnswer} className="w-full py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 text-sm font-medium shadow-sm flex items-center justify-center gap-2">
+                                    <button onClick={(e) => { e.stopPropagation(); generateAnswer(); }} className="w-full py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 text-sm font-medium shadow-sm flex items-center justify-center gap-2">
                                         <Eye className="w-4 h-4"/> 直接显示答案
                                     </button>
                                 </div>
@@ -323,7 +324,7 @@
                                         {C_MAJOR_CHORDS.map((item) => (
                                             <button 
                                                 key={item.name}
-                                                onClick={() => handleTargetChange(item)}
+                                                onClick={(e) => { e.stopPropagation(); handleTargetChange(item); }}
                                                 className={`py-2 px-1 rounded-lg text-sm font-bold border transition-all relative
                                                     ${selectedTarget.name === item.name 
                                                         ? 'bg-blue-600 text-white border-blue-600 shadow-md ring-2 ring-blue-100' 
@@ -341,8 +342,8 @@
                             </div>
                         </div>
 
-                        {/* 指板显示区域 */}
-                        <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                        {/* 指板显示区域 - 移除了 stopPropagation */}
+                        <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
                             <div className="overflow-x-auto pb-6 custom-scrollbar">
                                 <div className="inline-block min-w-max p-8">
                                     {/* 顶部数字 */}
